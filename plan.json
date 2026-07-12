@@ -1,0 +1,66 @@
+{
+  "steps": [
+    {
+      "id": 1,
+      "verify": "A region of the waveform is highlighted showing only background noise (no speech/music)",
+      "milestone": "Select noise-only sample",
+      "instruction": "In the Audacity waveform, click and drag to select a few seconds of audio that contains ONLY the background noise you want to remove (no speech or music in this section).",
+      "irreversible": false
+    },
+    {
+      "id": 2,
+      "verify": "The Noise Reduction dialog box is open showing the Get Noise Profile button",
+      "milestone": "Open Noise Reduction dialog",
+      "instruction": "Click Effect in the menu bar, then navigate to Noise Removal and Repair > Noise Reduction to open the Noise Reduction dialog.",
+      "irreversible": false
+    },
+    {
+      "id": 3,
+      "verify": "The dialog shows 'Noise Profile' has been captured (button may change state)",
+      "milestone": "Capture noise profile",
+      "instruction": "Click the 'Get Noise Profile' button in the dialog. This teaches Audacity what the background noise sounds like.",
+      "irreversible": false
+    },
+    {
+      "id": 4,
+      "verify": "The entire audio track or desired portion is now highlighted/selected",
+      "milestone": "Select full audio to process",
+      "instruction": "Press Ctrl+A to select the entire audio track, or click and drag to select the specific portion where you want to remove noise.",
+      "irreversible": false
+    },
+    {
+      "id": 5,
+      "verify": "The Noise Reduction dialog is open again with parameter sliders visible",
+      "milestone": "Open Noise Reduction dialog for application",
+      "instruction": "Click Effect > Noise Removal and Repair > Noise Reduction again to reopen the dialog.",
+      "irreversible": false
+    },
+    {
+      "id": 6,
+      "verify": "Parameter sliders show values (Noise Reduction dB, Sensitivity, Frequency Smoothing)",
+      "milestone": "Configure noise reduction parameters",
+      "instruction": "Adjust the three sliders: Noise Reduction (dB) to control volume reduction (default 6), Sensitivity to control how much is considered noise (default 6.00), and Frequency Smoothing in bands (default 6).",
+      "irreversible": false
+    },
+    {
+      "id": 7,
+      "verify": "Audio plays showing the noise-reduced result",
+      "milestone": "Preview the result",
+      "instruction": "Click the 'Preview' button to listen to how the noise reduction affects your audio. Adjust parameters if needed.",
+      "irreversible": false
+    },
+    {
+      "id": 8,
+      "verify": "The dialog closes and the waveform is processed",
+      "milestone": "Apply noise reduction",
+      "instruction": "Click 'OK' to apply the noise reduction effect to your selected audio.",
+      "irreversible": true
+    }
+  ],
+  "action": "Remove background noise from a podcast recording using Audacity's Noise Reduction effect",
+  "source_video": {
+    "url": "https://www.youtube.com/shorts/g3W3zy9ENCs"
+  },
+  "distilled_by": "watching (screenshots), not transcript",
+  "session_id": "016cfa94-5122-4557-bcdf-374a5c437350"
+}

@@ -1,0 +1,5 @@
+session_id,status,outcome,total_steps,num_clicks,num_types,num_waits,num_navigations,num_screenshots,elapsed_seconds,input_tokens,final_answer_excerpt
+d000f506-c039-4d31-9529-805ee6553552,interrupted,,76,68,1,2,1,76,258.802566,1675132,
+545707eb-4eea-4646-ab3a-7cf912b7fa92,completed,blocked,3,1,0,0,1,3,30.519226,40167,"I need to authenticate to access Google Sheets. The sign-in page is asking for a password. To proceed with creating a pivot table, you'll need to:  1. Enter your Google account password on the sign-in"
+0857e2e2-7740-4b24-85e6-865160ac435f,completed,blocked,3,1,0,0,1,3,30.038494,38401,"I've navigated to Google Sheets, but I need you to sign in first. The page is asking to choose an account - you can either:  1. Click on the displayed account (Ipsita Praharaj) if that's your account "
+34209bfc-0443-4c4f-ba13-a4fbb4a03f74,completed,blocked,9,2,0,1,4,9,52.636167,132836,{'steps': []}

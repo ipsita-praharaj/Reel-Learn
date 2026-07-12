@@ -1,0 +1,12 @@
+task_id,session_id,agent,environment,phase
+wa-cms-admin,7caa4779-149a-4208-9525-2dd42db9dcc9,h/web-surfer-flash,web,flash
+wa-forum-nav,72e18ce4-92cb-4d09-820e-7f890dc8415f,h/web-surfer-flash,web,flash
+m2w-niche-ecommerce,8de166ca-3144-4d32-8f20-9aeb01944b76,h/web-surfer-flash,web,flash
+wv-flights,fa47e1ec-0cad-4040-bd2a-735eb5bf713d,h/web-surfer-flash,web,flash
+repl-figma-rename,25524a2a-2f12-4d39-9bdd-65c7756f1649,h/web-surfer-flash,web,flash
+repl-excalidraw,d051fe98-caed-4f88-9128-5ab12334c193,h/web-surfer-flash,web,flash
+repl-gdocs-rename,7ef38f4c-559f-4c69-b143-3aabd576a360,h/web-surfer-flash,web,flash
+wa-sheets,133d8149-2278-4f2d-ae20-053f32f8ca5d,h/web-surfer-flash,web,flash
+construct-trello-drag,1d8a18d8-b548-472a-9819-79397de5351b,h/web-surfer-flash,web,flash
+construct-midtask-blocker,8dd6bf94-90af-458b-91aa-6f3f71080805,h/web-surfer-flash,web,flash
+ro-calc-chain,86078137-8722-4729-8708-77d9c717e76d,hard-traj-desktop-flash,desktop,flash

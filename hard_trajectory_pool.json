@@ -1,0 +1,174 @@
+{
+  "methodology_version": 1,
+  "baseline_agent": "h/web-surfer-flash",
+  "reference_agent": "h/web-surfer-pro",
+  "hardness_gate": "flash outcome in {failed, interrupted} AND pro outcome == succeeded",
+  "severity_metric_fields": [
+    "total_steps", "input_tokens", "elapsed_seconds", "repeat_action_rate"
+  ],
+  "repeat_action_rate_definition": "fraction of consecutive same-tool actions whose click coords are within ~2% of screen width/height of each other, computed post-hoc from sessions_events.csv tool_args",
+  "execution_order": [
+    "1. Validate h/desktop environment with a single trivial probe task (not part of hardness pool)",
+    "2. Run all pool tasks once on h/web-surfer-flash, log via export_session_csv.py",
+    "3. Run h/web-surfer-pro only on tasks where flash failed/interrupted",
+    "4. Apply hardness_gate + rank by severity metrics",
+    "5. Select final stratified set (top-N, spanning categories) as locked hard-trajectory benchmark"
+  ],
+  "desktop_probe_task": {
+    "id": "probe-desktop",
+    "environment": "h/desktop",
+    "instruction": "Open the file manager and rename one existing file to 'probe-ok'.",
+    "purpose": "Validate h/desktop environment provisions and responds at all before committing 4 pool slots to it."
+  },
+  "readonly_desktop_pool": {
+    "purpose": "Non-destructive local-desktop counterparts to the osworld-* pool entries: same hardness taxonomy (nested menus, long-horizon composition, dynamic-UI gestures, ambiguous targets), but every task is read-only or ends in its original state, so nothing on this machine gets edited/saved/deleted. Not gated with a pro-followup run by default (see run_pilot.py cmd_readonly_desktop).",
+    "tasks": [
+      {
+        "id": "ro-calc-chain",
+        "category": "3_long_horizon",
+        "environment": "desktop",
+        "instruction": "Open Calculator. Using ONLY mouse clicks on the on-screen buttons (no keyboard), compute (37 x 4) - (128 / 8) + 15^2, reporting the running result after each operation. Do not use keyboard shortcuts.",
+        "predicted_failure": "Long click chain with no formula parser to fall back on; operator precedence must be sequenced manually, so an early misclick compounds into a wrong final answer with no self-check.",
+        "file_risk": "none — no files involved"
+      },
+      {
+        "id": "ro-settings-toggle-revert",
+        "category": "2_ambiguous_targets",
+        "environment": "desktop",
+        "instruction": "In System Settings, navigate to the Accessibility > Display pane, toggle 'Reduce Transparency' on, confirm visually that it took effect, then toggle it back off so the setting ends exactly as it started.",
+        "predicted_failure": "Several similarly-named neighboring toggles (Reduce Motion, Increase Contrast) invite a wrong-target click; task also requires ending in the *original* state, not just any state.",
+        "file_risk": "none — system preference, explicitly reverted at the end"
+      },
+      {
+        "id": "ro-activity-monitor-drill",
+        "category": "1_silent_failure_interaction",
+        "environment": "desktop",
+        "instruction": "Open Activity Monitor, sort the process list by Memory descending, filter to 'My Processes', open the top process's info window, and report its thread count. Do not quit or force-close any process.",
+        "predicted_failure": "Nested filter dropdown + separate inspector window; a silent click failure on either would surface as a wrong or stale reading rather than an obvious error.",
+        "file_risk": "none — read-only inspection"
+      },
+      {
+        "id": "ro-preview-zoom-measure",
+        "category": "4_dynamic_async_ui",
+        "environment": "desktop",
+        "instruction": "In Preview, open an image, zoom to exactly 150% using the toolbar zoom control, use the marquee selection tool (not any annotation/markup tool) to select a region, read the pixel dimensions from the live selection readout, then reset zoom to 100% and close the window without saving.",
+        "predicted_failure": "Selection readout updates dynamically while dragging, and hitting an exact zoom percentage via toolbar clicks is a precise-targeting gesture class distinct from a simple click.",
+        "file_risk": "none — marquee tool only, explicitly closes unsaved"
+      }
+    ]
+  },
+  "pool": [
+    {
+      "id": "wa-cms-admin",
+      "category": "1_silent_failure_interaction",
+      "source": "WebArena (CMS/admin transactional flows, GPT-4 14.4% overall success)",
+      "environment": "web",
+      "instruction": "In a WordPress demo admin panel, create a new post, insert a featured image via the media-library modal, and save as draft (do not publish).",
+      "predicted_failure": "Modal-over-modal (media library opens inside post editor) causes silent click failures analogous to the Photoshop nested-menu bug."
+    },
+    {
+      "id": "wa-forum-nav",
+      "category": "3_long_horizon",
+      "source": "WebArena (forum multi-step nav)",
+      "environment": "web",
+      "instruction": "On Reddit, navigate to a specific subreddit, apply a sort filter, open a specific post matching a description, and save it (no posting/commenting).",
+      "predicted_failure": "Early misstep (wrong filter or wrong post) compounds without a self-check before the agent declares success."
+    },
+    {
+      "id": "m2w-niche-ecommerce",
+      "category": "2_ambiguous_targets",
+      "source": "Mind2Web (cross-domain generalization gap)",
+      "environment": "web",
+      "instruction": "On a smaller/niche e-commerce site (non-Amazon) with a non-standard variant selector, add a specific size+color configuration to cart.",
+      "predicted_failure": "Layout doesn't match common patterns the model has seen most; wrong variant selected or state lost across steps."
+    },
+    {
+      "id": "wv-flights",
+      "category": "4_dynamic_async_ui",
+      "source": "WebVoyager (dynamic multi-field forms)",
+      "environment": "web",
+      "instruction": "On Google Flights, search a specific multi-city itinerary using the date-picker and multi-city mode.",
+      "predicted_failure": "Date-picker widget interaction (open/close/select range) is a known-hard gesture class; possible easier control given WebVoyager's higher baseline success rates."
+    },
+    {
+      "id": "osworld-gimp",
+      "category": "1_silent_failure_interaction",
+      "source": "OSWorld (desktop creative apps, best-agent 38.1% success)",
+      "environment": "desktop",
+      "instruction": "In GIMP, crop an open image, rename the layer, and export as PNG.",
+      "predicted_failure": "Direct desktop analogue of the Photoshop-web bug; tests whether nested-menu coordinate drift is web-specific or general."
+    },
+    {
+      "id": "osworld-libreoffice",
+      "category": "3_long_horizon",
+      "source": "OSWorld (desktop office apps)",
+      "environment": "desktop",
+      "instruction": "In LibreOffice Calc, create a second sheet, enter data, write a cross-sheet formula referencing it, and apply cell formatting.",
+      "predicted_failure": "Same logical task as the Sheets pool item below (wa-sheets) but desktop-native — controlled pair to isolate web-vs-desktop effects on the same task."
+    },
+    {
+      "id": "osworld-filemanager",
+      "category": "1_silent_failure_interaction",
+      "source": "OSWorld (desktop, direct bug replication)",
+      "environment": "desktop",
+      "instruction": "In the desktop file manager, rename a file via the nested right-click context menu, then move it into a new folder.",
+      "predicted_failure": "Most direct desktop analogue of the original confirmed bug (rename via nested menu)."
+    },
+    {
+      "id": "osworld-vscode",
+      "category": "3_long_horizon",
+      "source": "OSWorld (desktop dev tools)",
+      "environment": "desktop",
+      "instruction": "In VS Code, edit a specific line in an open file, save it, then run a command in the integrated terminal and confirm its output.",
+      "predicted_failure": "Mixes typing/keyboard shortcuts with GUI; long horizon with a verification step at the end."
+    },
+    {
+      "id": "repl-figma-rename",
+      "category": "1_silent_failure_interaction",
+      "source": "Direct replication of findings.md session d000f506",
+      "environment": "web",
+      "instruction": "In a Figma file, rename a layer via the right-click context menu.",
+      "predicted_failure": "Same click-doesn't-register / coordinate drift on canvas-rendered UI as Photoshop Web."
+    },
+    {
+      "id": "repl-excalidraw",
+      "category": "1_silent_failure_interaction + 4_dynamic_async_ui",
+      "source": "Direct replication, canvas variant",
+      "environment": "web",
+      "instruction": "In Excalidraw, move a shape, resize it, then multi-select and group it with a second shape.",
+      "predicted_failure": "Canvas drag + multi-select, no DOM semantics at all; tests whether drag gesture handling (not just click) also fails."
+    },
+    {
+      "id": "repl-gdocs-rename",
+      "category": "1_silent_failure_interaction (control)",
+      "source": "Direct replication, DOM control",
+      "environment": "web",
+      "instruction": "In Google Docs, rename the document via the editable title text.",
+      "predicted_failure": "Expected easier than Figma/Photoshop — semantic DOM, not canvas. Used to isolate whether canvas-vs-DOM is really the hardness variable."
+    },
+    {
+      "id": "wa-sheets",
+      "category": "3_long_horizon",
+      "source": "WebArena-style long-horizon composition",
+      "environment": "web",
+      "instruction": "In Google Sheets, create a new tab, enter data across multiple cells, write a formula referencing the other tab, and apply cell formatting — 15+ atomic actions.",
+      "predicted_failure": "Early slip compounds; no self-check before declaring done. Paired with osworld-libreoffice for web-vs-desktop comparison."
+    },
+    {
+      "id": "construct-trello-drag",
+      "category": "4_dynamic_async_ui",
+      "source": "Adversarial construction (taxonomy category 4)",
+      "environment": "web",
+      "instruction": "On Trello, drag a card from one list to another.",
+      "predicted_failure": "Agent attempts a click instead of a mousedown-move-up drag gesture sequence."
+    },
+    {
+      "id": "construct-midtask-blocker",
+      "category": "6_midtask_blocker",
+      "source": "Adversarial construction (untested territory per findings.md contrast table)",
+      "environment": "web",
+      "instruction": "Browse a site anonymously (no login) and proceed as if buying/saving, hitting a real login wall only at checkout/save (~step 10 of 15), not at step 1.",
+      "predicted_failure": "Tests whether honest 'blocked' self-reporting still fires after real progress/investment, unlike the existing clean day-one blocker examples."
+    }
+  ]
+}

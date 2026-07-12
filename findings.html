@@ -1,0 +1,253 @@
+<title>Where H's Baseline Planner Breaks</title>
+<style>
+  :root {
+    --paper: #eef0f2;
+    --surface: #ffffff;
+    --surface-sunken: #e4e8eb;
+    --ink: #1a2029;
+    --ink-muted: #576073;
+    --border: #d7dbe0;
+    --accent: #b5451f;
+    --accent-soft: #f5e2d8;
+    --accent-ink: #7a2e13;
+    --verify: #2f6f5e;
+    --verify-soft: #dbeae5;
+    --shadow: 0 1px 2px rgba(26, 32, 41, 0.05), 0 10px 28px -16px rgba(26, 32, 41, 0.22);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #10141a;
+      --surface: #171c24;
+      --surface-sunken: #12161c;
+      --ink: #e8ebef;
+      --ink-muted: #97a1b3;
+      --border: #262e3a;
+      --accent: #e2703f;
+      --accent-soft: #3a2317;
+      --accent-ink: #f2b48f;
+      --verify: #5cb39c;
+      --verify-soft: #16302a;
+      --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 14px 32px -16px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #10141a; --surface: #171c24; --surface-sunken: #12161c;
+    --ink: #e8ebef; --ink-muted: #97a1b3; --border: #262e3a;
+    --accent: #e2703f; --accent-soft: #3a2317; --accent-ink: #f2b48f;
+    --verify: #5cb39c; --verify-soft: #16302a;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 14px 32px -16px rgba(0,0,0,0.55);
+  }
+  :root[data-theme="light"] {
+    --paper: #eef0f2; --surface: #ffffff; --surface-sunken: #e4e8eb;
+    --ink: #1a2029; --ink-muted: #576073; --border: #d7dbe0;
+    --accent: #b5451f; --accent-soft: #f5e2d8; --accent-ink: #7a2e13;
+    --verify: #2f6f5e; --verify-soft: #dbeae5;
+    --shadow: 0 1px 2px rgba(26,32,41,0.05), 0 10px 28px -16px rgba(26,32,41,0.22);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica Neue, Arial, sans-serif; }
+  .mono { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+  .shell { max-width: 720px; margin: 0 auto; padding: 64px 24px 100px; }
+
+  .kicker {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica Neue, Arial, sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent-ink); margin: 0 0 14px;
+  }
+  h1 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica Neue, Arial, sans-serif;
+    font-size: 34px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 18px;
+    text-wrap: balance; line-height: 1.15;
+  }
+  .dek { font-size: 18px; color: var(--ink-muted); max-width: 60ch; margin: 0 0 40px; }
+
+  .meta {
+    display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12.5px; color: var(--ink-muted); border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border); padding: 14px 0; margin: 0 0 44px;
+  }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  h2 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica Neue, Arial, sans-serif;
+    font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 4px; text-wrap: balance;
+  }
+  .finding {
+    margin-top: 56px; padding-top: 4px;
+  }
+  .finding-num {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent-ink); margin: 0 0 8px;
+  }
+  .severity {
+    display: inline-flex; align-items: center; gap: 6px; font-family: -apple-system, sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.03em; padding: 3px 9px; border-radius: 100px;
+    background: var(--accent-soft); color: var(--accent-ink); margin-left: 10px; vertical-align: middle;
+  }
+
+  p { margin: 14px 0; }
+  .lede-p { color: var(--ink-muted); }
+
+  blockquote.evidence {
+    margin: 20px 0; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; box-shadow: var(--shadow);
+  }
+  blockquote.evidence .tag {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-muted); display: block; margin-bottom: 8px;
+  }
+  blockquote.evidence .quote { font-size: 15.5px; font-style: italic; margin: 0 0 8px; }
+  blockquote.evidence .coord { font-size: 12.5px; color: var(--ink-muted); }
+
+  .repeat-list {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; color: var(--ink-muted);
+    background: var(--surface-sunken); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; margin: 16px 0; overflow-x: auto; white-space: pre; line-height: 1.7;
+  }
+
+  .fix {
+    margin: 20px 0; padding: 16px 18px; background: var(--verify-soft); border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--verify) 35%, var(--border));
+  }
+  .fix .tag {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase; color: var(--verify); display: block; margin-bottom: 6px;
+  }
+  .fix p { margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14.5px; color: var(--ink); }
+
+  .contrast-table {
+    width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  .contrast-table th {
+    text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--ink-muted); border-bottom: 1px solid var(--border); padding: 8px 12px 8px 0;
+  }
+  .contrast-table td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .contrast-table .ok { color: var(--verify); font-weight: 700; }
+  .contrast-table .bad { color: var(--accent-ink); font-weight: 700; }
+
+  .session-link {
+    display: inline-block; font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px;
+    font-weight: 600; color: var(--accent-ink); text-decoration: none; border-bottom: 1px solid currentColor;
+    margin-top: 6px;
+  }
+  .session-link:hover { opacity: 0.75; }
+
+  .appendix {
+    margin-top: 64px; padding-top: 28px; border-top: 1px solid var(--border);
+  }
+  .appendix h2 { margin-bottom: 14px; }
+  .appendix-item {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px;
+    padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 12px;
+  }
+  .appendix-item:last-child { border-bottom: none; }
+  .appendix-item .label { color: var(--ink-muted); }
+
+  ::-webkit-scrollbar { height: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="shell">
+  <p class="kicker">Planner failure analysis · h/web-surfer-flash baseline</p>
+  <h1>The plan didn't fail from a bad idea. It failed from forty identical clicks.</h1>
+  <p class="dek">A close read of one real, already-run session on H Company's baseline agent (<span class="mono">holo3-1-35b-a3b</span>) surfaces a specific, reproducible planner gap: no detection for interaction-level stuck loops, even though the same architecture handles environment-level blockers (login walls, bot checks) cleanly. Every claim below is a direct quote or count from the session's own trajectory — nothing inferred.</p>
+
+  <div class="meta">
+    <span><b>Primary evidence</b> session d000f506-c039-4d31-9529-805ee6553552</span>
+    <span><b>Runtime</b> 4m 24s · 76 steps · interrupted, no answer</span>
+    <span><b>Cost</b> 1,675,132 input tokens burned before external cutoff</span>
+  </div>
+
+  <p class="lede-p">The task: create a blank document in Photoshop on the Web and rename it to "Demo," using an agent whose instructions included a tutorial-derived step list ("click the document name, choose Rename, type the new name, press Enter"). The agent found the right menu. Then it never left it.</p>
+
+  <div class="finding">
+    <p class="finding-num">Finding 1<span class="severity">confirmed, reproducible</span></p>
+    <h2>No stuck-loop detection at the interaction level</h2>
+    <p>Starting at step 53, the agent opens Document → Rename... in a hamburger submenu — visually exactly what its instructions describe. The click doesn't open a dialog. From there, across the next <b>~40 actions</b>, the plan is identical every time: click near the same menu label, watch nothing happen, nudge the coordinates by a hair, repeat.</p>
+
+    <blockquote class="evidence">
+      <span class="tag">Step 57</span>
+      <p class="quote">"The click on 'Rename...' didn't seem to produce a visible dialog in the observation. Let me try clicking on the Rename option again, perhaps with slightly [different coordinates]."</p>
+    </blockquote>
+
+    <p>That reasoning repeats, almost verbatim, for the rest of the session:</p>
+    <div class="repeat-list">step 147  x=0.235 y=0.250  "Rename... text in Document submenu"
+step 151  x=0.260 y=0.255  "Rename... option text in Document submenu"
+step 179  x=0.245 y=0.255  "Rename... text in Document submenu"
+step 195  x=0.240 y=0.250  "Rename... text in Document submenu"
+step 231  x=0.260 y=0.255  "Rename... option text in Document submenu"
+step 263  x=0.235 y=0.250  "Rename... text in Document submenu"
+step 299  x=0.240 y=0.255  "Rename... text in Document submenu"
+step 307  x=0.245 y=0.255  "Rename... text in Document submenu"   ← last action before external cutoff</div>
+    <p class="lede-p">Every one of ~20 consecutive attempts lands inside a box roughly 3% of screen width by 1.5% of screen height. The model narrates each as "let me try a different approach" — but by any reasonable definition, clicking the same label eight pixels to the left is not a different approach. It's the same approach, restated.</p>
+
+    <div class="fix">
+      <span class="tag">Concrete fix</span>
+      <p>A no-progress guard: if the last N actions (N≈4) target the same semantic element within a small coordinate tolerance and the resulting screenshot is unchanged, force either (a) a structurally different interaction — double-click, keyboard nav, scroll-then-click, hover-then-click — or (b) an honest "blocked" outcome. Cheap to implement, and it would have ended this session at step ~65 instead of 76+ (externally killed, never self-terminated).</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <p class="finding-num">Finding 2<span class="severity">confirmed</span></p>
+    <h2>Literal instructions anchor the model past its own better judgment</h2>
+    <p>The stuck loop didn't start immediately — the agent actually tried several genuinely different tactics first: clicking the title directly (steps 29–41), the hamburger menu (45–53), <span class="mono">F2</span> + retype (93–97), <span class="mono">Ctrl+S</span> (115, 159), and Save As (127–167). That's real exploration. The problem is what happened <em>after</em>: once "Document → Rename..." visually matched the literal wording of its instructions, the model stopped varying strategy and only varied pixels — even though that exact instructed action was the one demonstrably not working.</p>
+    <blockquote class="evidence">
+      <span class="tag">Step 53 — the anchoring moment</span>
+      <p class="quote">"The Document submenu is now open and I can see the 'Rename...' option at the top. This is exactly what I need to rename the document from 'Untitled-1'..."</p>
+    </blockquote>
+    <p class="lede-p">A textual match against the instructions appears to outweigh the model's own accumulating disconfirming evidence (20+ failed clicks) that this path works. Earlier in the same session, less "correct-looking" attempts were abandoned after a single failure; this one wasn't abandoned after twenty.</p>
+    <div class="fix">
+      <span class="tag">Concrete fix</span>
+      <p>Weight repeated interaction failure above instruction-text similarity: a plan step matching visible UI text is a hint about where to look, not a guarantee the described action will register. Repeated failure of an instructed action should be stronger evidence than the instruction's own wording, and should trigger strategy-switching rather than reinforcing the current one.</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <p class="finding-num">Finding 3<span class="severity">hypothesis — worth an engineering check</span></p>
+    <h2>Possible coordinate-mapping issue on nested menu overlays</h2>
+    <p>Across ~40 attempts spanning a 3%×1.5% region of the screen, the click on "Rename..." never once opened a dialog. If the element were genuinely at any of those coordinates, ordinary click noise should have landed correctly at least once. That it didn't raises a narrow, testable hypothesis: floating/nested submenu overlays in this specific web environment may have a coordinate transform offset between what the model sees (the downscaled screenshot) and what actually receives the click.</p>
+    <p class="lede-p">This one isn't proven by the trajectory alone — it's the kind of thing that needs a targeted repro on H's side, clicking known nested-menu coordinates and diffing against the DOM's actual hit-test.</p>
+  </div>
+
+  <div class="finding">
+    <p class="finding-num">Finding 4<span class="severity">confirmed</span></p>
+    <h2>Undetected loops are a token-cost bug, not just a UX bug</h2>
+    <p>Every step resends the accumulating screenshot + reasoning history. This session alone burned <b>1,675,132 input tokens</b> on the free-tier 35B model — almost entirely inside the stuck loop — before being cut off by the client's own timeout, not by anything on the agent's side. Finding 1's fix directly caps this: the earlier a loop is caught, the less it costs, and cost grows with every additional wasted retry.</p>
+  </div>
+
+  <div class="finding">
+    <p class="finding-num">Contrast</p>
+    <h2>The same architecture handles a different failure type well</h2>
+    <p>This isn't "the baseline can't detect failure" — it's narrower than that. Three other sessions in the same investigation show clean, fast, honest failure recognition, just for a different <em>class</em> of blocker: environment-level walls (login screens, bot checks) rather than interaction-level ones (a click that silently does nothing).</p>
+    <table class="contrast-table">
+      <tr><th>Failure type</th><th>Session</th><th>Steps to self-recognize</th><th>Outcome</th></tr>
+      <tr><td>Google Sheets sign-in wall</td><td class="mono">545707eb…</td><td>3</td><td class="ok">Honest "blocked," clear ask</td></tr>
+      <tr><td>Google Sheets sign-in wall (baseline)</td><td class="mono">0857e2e2…</td><td>3</td><td class="ok">Honest "blocked," clear ask</td></tr>
+      <tr><td>YouTube bot-verification wall</td><td class="mono">34209bfc…</td><td>~7 (5 URL variants tried)</td><td class="ok">Honest "blocked," empty plan</td></tr>
+      <tr><td>Rename dialog not opening (this report)</td><td class="mono">d000f506…</td><td>never — ran to 76 steps</td><td class="bad">Interrupted, no answer</td></tr>
+    </table>
+    <p class="lede-p">The planner has a working concept of "the environment is blocking me" (auth walls, CAPTCHAs) but no equivalent concept of "my own click isn't landing." That's a much narrower, more tractable gap to close than "improve general robustness" — it's specifically about extending existing blocker-detection to interaction-level, not building failure detection from scratch.</p>
+  </div>
+
+  <div class="appendix">
+    <h2>Verify it yourself</h2>
+    <div class="appendix-item"><span class="label">Primary evidence (stuck loop)</span><a class="session-link" href="https://platform.hcompany.ai/agents/sessions/d000f506-c039-4d31-9529-805ee6553552" target="_blank" rel="noopener">Session d000f506 ↗</a></div>
+    <div class="appendix-item"><span class="label">Contrast: Sheets wall (informed agent)</span><a class="session-link" href="https://platform.hcompany.ai/agents/sessions/545707eb-4eea-4646-ab3a-7cf912b7fa92" target="_blank" rel="noopener">Session 545707eb ↗</a></div>
+    <div class="appendix-item"><span class="label">Contrast: Sheets wall (baseline)</span><a class="session-link" href="https://platform.hcompany.ai/agents/sessions/0857e2e2-7740-4b24-85e6-865160ac435f" target="_blank" rel="noopener">Session 0857e2e2 ↗</a></div>
+    <div class="appendix-item"><span class="label">Contrast: YouTube bot wall</span><a class="session-link" href="https://platform.hcompany.ai/agents/sessions/34209bfc-0443-4c4f-ba13-a4fbb4a03f74" target="_blank" rel="noopener">Session 34209bfc ↗</a></div>
+  </div>
+</div>

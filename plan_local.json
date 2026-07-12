@@ -1,0 +1,94 @@
+{
+  "steps": [
+    {
+      "id": 1,
+      "verify": "A portion of the waveform is highlighted/selected in the audio track",
+      "milestone": "Select noise profile section",
+      "instruction": "Select a few seconds of audio that contains only background noise (no talking or other content)",
+      "irreversible": false,
+      "screenshots": [
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_002.png",
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_003.png",
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_004.png",
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_005.png",
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_007.png",
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_010.png"
+      ],
+      "screenshot": "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_002.png"
+    },
+    {
+      "id": 2,
+      "verify": "The Noise Reduction dialog appears with Step 1 completed; cursor moves to Step 2",
+      "milestone": "Capture noise profile",
+      "instruction": "Click the 'Get Noise Profile' button in Step 1 of the Noise Reduction dialog",
+      "irreversible": false,
+      "screenshots": [
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_006.png",
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_011.png",
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_012.png"
+      ],
+      "screenshot": "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_006.png"
+    },
+    {
+      "id": 3,
+      "verify": "Settings displayed in dialog: 12 in Noise reduction field, 6.00 in Sensitivity, 3 in Frequency smoothing",
+      "milestone": "Configure noise reduction settings",
+      "instruction": "In Step 2, adjust the three sliders: Noise reduction (12 dB), Sensitivity (6.00), Frequency smoothing (3 bands)",
+      "irreversible": false,
+      "screenshots": [
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_009.png"
+      ],
+      "screenshot": "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_009.png"
+    },
+    {
+      "id": 4,
+      "verify": "Audio plays through speakers showing the reduced noise effect",
+      "milestone": "Preview the reduction",
+      "instruction": "Click the 'Preview' button to hear how the noise reduction will sound",
+      "irreversible": false,
+      "screenshots": [],
+      "screenshot": null
+    },
+    {
+      "id": 5,
+      "verify": "Dialog closes and the waveform may show visual changes; audio plays with reduced background noise",
+      "milestone": "Apply noise reduction",
+      "instruction": "Click the 'OK' button to apply the noise reduction to the selected audio",
+      "irreversible": true,
+      "screenshots": [
+        "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_008.png"
+      ],
+      "screenshot": "screenshots/f1abe267-19c4-4818-90d5-6641ebce3db8/obs_008.png"
+    },
+    {
+      "id": 6,
+      "verify": "The menu bar in the screenshot reads 'Audacity' immediately before and after any menu-bar click, and the intended Audacity menu/dialog is what actually opened",
+      "milestone": "Guard against losing focus to another app",
+      "instruction": "Before clicking Effect, Noise Reduction, or any other menu-bar item, confirm the top menu bar reads 'Audacity', not another app. On this machine, other open apps (e.g. a code editor or chat app) have been observed stealing frontmost focus mid-session, causing a click meant for Audacity's menu to land in that other app instead. The attached screenshot is a real example from a prior failed run: it was captured right after a click intended for Audacity's Effect menu, but the frontmost app had silently changed to a code editor instead. If this happens, do not just Cmd+Tab blindly and re-click the same way - click directly on the Audacity window itself (or select it by name via Cmd+Tab) to restore focus, then retry the exact same menu action.",
+      "irreversible": false,
+      "screenshots": [
+        "screenshots/ae26abda-05d8-4f7d-89ff-2bb8b67e5f2b/obs_004.png"
+      ],
+      "screenshot": "screenshots/ae26abda-05d8-4f7d-89ff-2bb8b67e5f2b/obs_004.png"
+    },
+    {
+      "id": 7,
+      "verify": "The same dialog or error message does not appear more than once for the same intended action; if it does, a genuinely different selection/interaction method was tried before retrying, not a repeat of the same one",
+      "milestone": "Treat a recurring identical screen as proof of being stuck, not a fluke to retry past",
+      "instruction": "If the exact same dialog or error re-appears after already trying to resolve it once (for example, Audacity's 'No Audio Selected' dialog appearing again even though the selection timer/display still shows a nonzero duration and the track shows a visible highlighted region), that repetition is itself the signal: the selection is not being registered the way it looks on screen, and dismissing the dialog to immediately retry the identical Effect-menu path will just reproduce it a third time. Do not repeat the same click sequence. Instead make the selection again using a genuinely different method - e.g. a single click on the track first to establish focus, then a slower deliberate click-and-hold-drag past the intended end point before releasing, or using Select > Selection / keyboard selection instead of a mouse drag - before reopening the effect dialog.",
+      "irreversible": false,
+      "screenshots": [
+        "screenshots/2bd78317-4b55-4a6c-9357-b572bda6c335/obs_009.png",
+        "screenshots/2bd78317-4b55-4a6c-9357-b572bda6c335/obs_017.png",
+        "screenshots/2bd78317-4b55-4a6c-9357-b572bda6c335/obs_027.png"
+      ],
+      "screenshot": "screenshots/2bd78317-4b55-4a6c-9357-b572bda6c335/obs_009.png"
+    }
+  ],
+  "action": "Remove background noise from a podcast recording using Audacity's Noise Reduction effect",
+  "source_video": {
+    "url": "https://www.youtube.com/shorts/g3W3zy9ENCs"
+  },
+  "distilled_by": "watching (local Chrome, real account), not transcript",
+  "session_id": "f1abe267-19c4-4818-90d5-6641ebce3db8"
+}
