@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+<title>Reel-Learn — paste a tutorial, get a skill</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --bg:#eceeec; --bg-raised:#ffffff;
+    --ink:#171c20; --ink-dim:#57626c; --ink-faint:#828d95;
+    --accent:#a5651b; --accent-ink:#ffffff;
+    --fail:#a3402b; --ok:#3f7d64;
+    --line: rgba(23,28,32,0.14); --line-strong: rgba(23,28,32,0.28);
+    --mono: ui-monospace,"SF Mono","Cascadia Mono","JetBrains Mono","Roboto Mono",Menlo,Consolas,monospace;
+    --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#10161b; --bg-raised:#171f26;
+      --ink:#e7ebee; --ink-dim:#96a2ac; --ink-faint:#5d6871;
+      --accent:#e2a33d; --accent-ink:#171008;
+      --fail:#e2725a; --ok:#6fbb9b;
+      --line: rgba(231,235,238,0.14); --line-strong: rgba(231,235,238,0.26);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10161b; --bg-raised:#171f26;
+    --ink:#e7ebee; --ink-dim:#96a2ac; --ink-faint:#5d6871;
+    --accent:#e2a33d; --accent-ink:#171008;
+    --fail:#e2725a; --ok:#6fbb9b;
+    --line: rgba(231,235,238,0.14); --line-strong: rgba(231,235,238,0.26);
+    color-scheme: dark;
+  }
+  :root[data-theme="light"]{
+    --bg:#eceeec; --bg-raised:#ffffff;
+    --ink:#171c20; --ink-dim:#57626c; --ink-faint:#828d95;
+    --accent:#a5651b; --accent-ink:#ffffff;
+    --fail:#a3402b; --ok:#3f7d64;
+    --line: rgba(23,28,32,0.14); --line-strong: rgba(23,28,32,0.28);
+    color-scheme: light;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg); color: var(--ink); font-family: var(--sans);
+    font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  ::selection{ background: var(--accent); color: var(--accent-ink); }
+  a{ color: var(--accent); }
+  h1,h2{ font-family: var(--mono); margin:0; letter-spacing:-0.01em; text-wrap:balance; }
+  p{ margin:0; }
+
+  .topnav{
+    display:flex; align-items:center; gap:0.9rem; max-width:760px; margin:0 auto;
+    padding: 1rem 1.5rem 0; font-family: var(--mono); font-size:0.76rem;
+  }
+  .topnav > a:first-child{ font-weight:800; font-size:0.92rem; letter-spacing:-0.01em; color: var(--ink); text-decoration:none; }
+  .topnav > span{ color: var(--ink-faint); flex:1; }
+  .topnav-link{ color: var(--ink-dim); text-decoration:none; border-bottom:1px solid var(--line-strong); }
+  .topnav-link:hover{ color: var(--accent); border-color: var(--accent); }
+
+  .wrap{ max-width:760px; margin:0 auto; padding: 1.5rem 1.5rem 2.4rem; }
+
+  .eyebrow{ font-family: var(--mono); font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; color: var(--ink-faint); }
+  h1{
+    font-size: clamp(1.9rem, 1.3rem + 2.4vw, 2.75rem); font-weight:800; line-height:1.1;
+    margin: 0.5rem 0 0; max-width:18ch; color: var(--ink);
+  }
+  .tagline{
+    font-family: var(--sans); font-size:1rem; font-weight:500; line-height:1.55;
+    margin-top:0.7rem; max-width:48ch; color: var(--ink-dim);
+  }
+
+  .run-box{
+    margin-top:1.6rem; padding:1.1rem 1.2rem; border:1px solid var(--line-strong);
+    border-radius:8px; background:var(--bg-raised);
+  }
+  .run-label{ display:block; font-family: var(--mono); font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase; color: var(--ink-faint); margin-bottom:0.55rem; }
+  .run-row{ display:flex; gap:0.6rem; flex-wrap:wrap; }
+  .run-row input{
+    flex:1 1 260px; min-width:0; font-family: var(--mono); font-size:0.85rem; color: var(--ink);
+    background: var(--bg); border:1px solid var(--line-strong); border-radius:5px; padding:0.6rem 0.7rem;
+  }
+  .run-row input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .run-row button{
+    font-family: var(--mono); font-size:0.82rem; font-weight:700; color: var(--accent-ink);
+    background: var(--accent); border:none; border-radius:5px; padding:0.6rem 1.1rem; cursor:pointer;
+  }
+  .run-row button:hover{ opacity:0.9; }
+  .run-note{ display:none; font-size:0.83rem; color: var(--ink-dim); line-height:1.5; margin-top:0.8rem; padding-top:0.8rem; border-top:1px dashed var(--line); }
+  .run-note.show{ display:block; }
+
+  .skill-head{ margin-top:2rem; padding-bottom:1.2rem; border-bottom:1px solid var(--line); }
+  .skill-label{ font-family: var(--mono); font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; color: var(--ink-faint); }
+  .skill-head h2{ font-size:1.2rem; font-weight:700; line-height:1.4; margin-top:0.5rem; max-width:44ch; }
+  .skill-meta{ display:flex; flex-wrap:wrap; gap:0.4rem 1.2rem; margin-top:0.8rem; font-family: var(--mono); font-size:0.76rem; color: var(--ink-faint); }
+  .skill-meta a{ color: var(--ink-dim); }
+
+  .steps{ list-style:none; margin:0; padding:0; }
+  .step{
+    position:relative; display:flex; gap:1rem; padding:1.4rem 0; border-bottom:1px solid var(--line);
+  }
+  .step-num{ font-family: var(--mono); font-size:0.75rem; color: var(--ink-faint); flex:0 0 auto; padding-top:0.15rem; }
+  .step-body{ flex:1; min-width:0; }
+  .step-tag{
+    display:inline-block; font-family: var(--mono); font-size:0.66rem; letter-spacing:0.05em; text-transform:uppercase;
+    color: var(--accent); border:1px solid var(--accent); border-radius:999px; padding:0.15rem 0.55rem; margin-bottom:0.55rem;
+  }
+  .step-milestone{ font-size:1rem; font-weight:700; color: var(--ink); }
+  .step-instruction{ font-size:0.92rem; color: var(--ink-dim); line-height:1.6; margin-top:0.4rem; max-width:58ch; }
+  .step-verify{ font-family: var(--mono); font-size:0.74rem; color: var(--ink-faint); margin-top:0.55rem; line-height:1.5; max-width:58ch; }
+  .step-verify b{ color: var(--ink-dim); font-weight:600; }
+  .step-irr{ font-family: var(--mono); font-size:0.7rem; color: var(--fail); margin-top:0.4rem; }
+  .step img{ display:block; width:100%; max-width:420px; height:auto; border-radius:5px; border:1px solid var(--line-strong); margin-top:0.8rem; }
+  .step-noshot{
+    font-family: var(--mono); font-size:0.74rem; color: var(--ink-faint); margin-top:0.8rem;
+    padding:0.6rem 0.75rem; border:1px dashed var(--line-strong); border-radius:5px; max-width:420px;
+  }
+
+  .motive{ margin-top:1.6rem; padding-top:1.15rem; border-top:1px solid var(--line); }
+  .motive h2{ font-size:0.82rem; letter-spacing:0.01em; color: var(--ink); margin-bottom:0.6rem; }
+  .motive p{ font-size:0.93rem; color: var(--ink-dim); line-height:1.65; max-width:58ch; }
+
+  .codebox{
+    margin-top:0.8rem; background: var(--bg-raised); border:1px solid var(--line); border-radius:6px;
+    padding:0.85rem 1rem; font-family: var(--mono); font-size:0.82rem; color: var(--ink-dim); overflow-x:auto; white-space:pre;
+  }
+
+  footer{ margin-top:1.3rem; padding-top:1rem; border-top:1px solid var(--line); }
+  footer .line2{ font-size:0.85rem; color: var(--ink-faint); }
+</style>
+
+<nav class="topnav"><a href="motivation.html">Reel-Learn</a><span>agents that learn by watching reels</span><a href="pipeline.html" class="topnav-link">the pipeline case study →</a></nav>
+
+<div class="wrap">
+  <div class="eyebrow">See it work</div>
+  <h1>Paste a tutorial. Get a skill.</h1>
+  <p class="tagline">This is the real output of the pipeline in this repo — not a mockup. Seven checkpoints, a screenshot per step where one was captured, and two steps it only added after watching itself fail.</p>
+
+  <div class="run-box">
+    <label class="run-label" for="url">YouTube tutorial URL</label>
+    <div class="run-row">
+      <input id="url" type="text" value="https://www.youtube.com/shorts/g3W3zy9ENCs" spellcheck="false" autocomplete="off" />
+      <button id="runBtn" type="button">Watch it</button>
+    </div>
+    <div class="run-note" id="runNote"></div>
+  </div>
+
+  <div id="result">
+    <div class="skill-head">
+      <div class="skill-label">Skill distilled</div>
+      <h2>Remove background noise from a podcast recording using Audacity's Noise Reduction effect</h2>
+      <div class="skill-meta">
+        <span>source: <a href="https://www.youtube.com/shorts/g3W3zy9ENCs" target="_blank" rel="noopener">youtube.com/shorts/g3W3zy9ENCs</a></span>
+        <span>7 checkpoints</span>
+        <span>2 self-taught</span>
+      </div>
+    </div>
+
+    <ol class="steps">
+      <li class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-milestone">Select noise profile section</div>
+          <p class="step-instruction">Select a few seconds of audio that contains only background noise (no talking or other content).</p>
+          <div class="step-verify"><b>verify —</b> a portion of the waveform is highlighted/selected in the audio track.</div>
+          <img src="demo/img/step1.jpg" alt="Watching the tutorial: selecting the noise-only section of the waveform" loading="lazy">
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-milestone">Capture noise profile</div>
+          <p class="step-instruction">Click the "Get Noise Profile" button in Step 1 of the Noise Reduction dialog.</p>
+          <div class="step-verify"><b>verify —</b> the Noise Reduction dialog appears with Step 1 completed; cursor moves to Step 2.</div>
+          <img src="demo/img/step2.jpg" alt="Watching the tutorial: the Noise Reduction dialog opening" loading="lazy">
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-milestone">Configure noise reduction settings</div>
+          <p class="step-instruction">In Step 2, adjust the three sliders: Noise reduction (12 dB), Sensitivity (6.00), Frequency smoothing (3 bands).</p>
+          <div class="step-verify"><b>verify —</b> settings displayed in dialog: 12 in Noise reduction field, 6.00 in Sensitivity, 3 in Frequency smoothing.</div>
+          <img src="demo/img/step3.jpg" alt="Watching the tutorial: the noise reduction parameters" loading="lazy">
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-milestone">Preview the reduction</div>
+          <p class="step-instruction">Click the "Preview" button to hear how the noise reduction will sound.</p>
+          <div class="step-verify"><b>verify —</b> audio plays through speakers showing the reduced noise effect.</div>
+          <div class="step-noshot">no screenshot captured for this step — the real pipeline output isn't edited for completeness</div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <div class="step-milestone">Apply noise reduction</div>
+          <p class="step-instruction">Click the "OK" button to apply the noise reduction to the selected audio.</p>
+          <div class="step-verify"><b>verify —</b> dialog closes and the waveform may show visual changes; audio plays with reduced background noise.</div>
+          <div class="step-irr">irreversible step</div>
+          <img src="demo/img/step5.jpg" alt="Watching the tutorial: applying the noise reduction" loading="lazy">
+        </div>
+      </li>
+      <li class="step learned">
+        <div class="step-num">06</div>
+        <div class="step-body">
+          <div class="step-tag">self-taught, after a real failure</div>
+          <div class="step-milestone">Guard against losing focus to another app</div>
+          <p class="step-instruction">Before clicking Effect, Noise Reduction, or any other menu-bar item, confirm the top menu bar reads "Audacity", not another app. On this machine, other open apps (a code editor, a chat app) have been observed stealing frontmost focus mid-session, causing a click meant for Audacity's menu to land somewhere else instead. If this happens, don't just Cmd+Tab blindly and re-click the same way — click directly on the Audacity window itself to restore focus, then retry the exact same action.</p>
+          <div class="step-verify"><b>verify —</b> the menu bar reads "Audacity" immediately before and after any menu-bar click.</div>
+          <div class="step-noshot">the screenshot for this step captured the failure itself, mid-session — not something to publish as-is, so it's described in words instead</div>
+        </div>
+      </li>
+      <li class="step learned">
+        <div class="step-num">07</div>
+        <div class="step-body">
+          <div class="step-tag">self-taught, after a real failure</div>
+          <div class="step-milestone">Treat a recurring identical screen as proof of being stuck, not a fluke to retry past</div>
+          <p class="step-instruction">If the exact same dialog or error re-appears after already trying to resolve it once — for example, Audacity's "No Audio Selected" dialog appearing again even though the selection timer still shows a nonzero duration — that repetition is the signal: the selection isn't registering the way it looks on screen. Don't repeat the same click sequence. Make the selection again using a genuinely different method before reopening the effect dialog.</p>
+          <div class="step-verify"><b>verify —</b> the same dialog or error does not appear more than once for the same intended action without a genuinely different method being tried first.</div>
+          <img src="demo/img/step7.jpg" alt="The actual stuck loop: the same 'No Audio Selected' dialog reappearing" loading="lazy">
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="motive">
+    <h2>Run it on your own tutorial</h2>
+    <p>The URL box above replays our one real, already-run example — a live run needs a real browser and an LLM call, which a static page can't do. The code that produced everything on this page is in the repo, unmodified:</p>
+    <div class="codebox">python youtube_to_local_skill.py "&lt;video_url&gt;" "&lt;goal to replicate&gt;"</div>
+    <p style="margin-top:0.8rem">It opens the video in your own signed-in Chrome, scrubs and screenshots it (never reads captions), distills the checkpoint plan above, and registers the result as a reusable Skill.</p>
+  </div>
+
+  <footer>
+    <div class="line2">Where this plan actually broke, four times, in three ways: <a href="pipeline.html">the pipeline case study →</a></div>
+  </footer>
+</div>
+
+<script>
+  (function(){
+    var KNOWN = "https://www.youtube.com/shorts/g3w3zy9encs";
+    var input = document.getElementById('url');
+    var note = document.getElementById('runNote');
+    var result = document.getElementById('result');
+    document.getElementById('runBtn').addEventListener('click', function(){
+      var val = input.value.trim().replace(/\/+$/, '').toLowerCase();
+      if (val === KNOWN || val === '') {
+        note.className = 'run-note';
+        note.textContent = '';
+      } else {
+        note.className = 'run-note show';
+        note.innerHTML = 'A live run needs a real browser and an LLM call (~2 min) — this static page can\'t do that for an arbitrary URL. Showing the one real example we ran below; the "Run it on your own tutorial" section further down has the exact command to try this on any video yourself.';
+      }
+      result.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  })();
+</script>
+
+</body></html>

@@ -10,7 +10,7 @@ Built on [H Company's](https://hcompany.ai) `hai-agents` platform
 (`h/web-surfer-flash`/`pro` baselines, `h/desktop` environments, custom
 Agents and Skills).
 
-**Presentable material:** [live pitch site](https://ipsita-praharaj.github.io/Reel-Learn/) (motivation + the Audacity case study) · [PDF](pdf/reel-learn.pdf)
+**Presentable material:** [live pitch site](https://ipsita-praharaj.github.io/Reel-Learn/) · [try it — real distilled skill, step by step](https://ipsita-praharaj.github.io/Reel-Learn/demo.html) · [the pipeline case study](https://ipsita-praharaj.github.io/Reel-Learn/pipeline.html) · [PDF](pdf/reel-learn.pdf)
 
 ## The core finding
 
