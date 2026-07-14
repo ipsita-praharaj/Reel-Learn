@@ -149,6 +149,7 @@
     background: color-mix(in srgb, var(--ink) 88%, transparent); border:1px solid var(--line-strong);
   }
   .compare-mock.reel iframe{ width:100%; height:100%; border:0; display:block; }
+  .print-reel{ display:none; }
   .compare-stat{ font-family: var(--mono); font-size:0.8rem; font-weight:700; color: var(--ink); }
   .compare-stat.bad{ color: var(--ink-faint); text-decoration: line-through; }
   .compare-card p{ font-size:0.82rem; color: var(--ink-dim); margin-top:0.4rem; line-height:1.5; max-width:none; }
@@ -169,6 +170,17 @@
 
   footer{ margin-top:1.3rem; padding-top:1rem; border-top:1px solid var(--line); }
   footer .line2{ font-size:0.85rem; color: var(--ink-faint); }
+
+  @media print{
+    .tile, .fact-tile, .bubble, .compare-card, .motive, .flow, .bubbles{ break-inside: avoid; page-break-inside: avoid; }
+    .tile-grid{ break-inside: avoid; }
+    h1, h2, h3{ break-after: avoid; }
+    .compare-mock.reel iframe{ display:none; }
+    .print-reel{
+      display:flex; width:100%; height:100%; align-items:center; justify-content:center; text-align:center;
+      font-family: var(--mono); font-size:0.7rem; color: var(--bg-raised); line-height:1.6;
+    }
+  }
 </style>
 
 <nav class="topnav"><a href="motivation.html">Reel-Learn</a><span>agents that learn by watching reels</span><a href="pipeline.html" class="topnav-link">the pipeline case study →</a></nav>
@@ -258,7 +270,7 @@
       </div>
       <div class="compare-card win">
         <div class="clabel">The reel</div>
-        <div class="compare-mock reel"><iframe src="https://www.youtube.com/embed/g3W3zy9ENCs" title="Audacity noise removal — the tutorial it learned from" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+        <div class="compare-mock reel"><iframe src="https://www.youtube.com/embed/g3W3zy9ENCs" title="Audacity noise removal — the tutorial it learned from" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><div class="print-reel">▶<br>youtube.com/shorts/<br>g3W3zy9ENCs</div></div>
         <div class="compare-stat">solved, first pass</div>
         <p>Same task, same agent — shown the tutorial instead of told about it.</p>
       </div>

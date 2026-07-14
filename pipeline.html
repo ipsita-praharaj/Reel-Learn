@@ -281,6 +281,18 @@
     padding-top: 0.75rem; border-top: 1px solid var(--line);
     font-family: var(--mono); font-size:0.72rem; color: var(--ink-faint);
   }
+
+  @media print{
+    figure, .tool, .codebox, .audio-block, .schem-panel, .status-table tr{ break-inside: avoid; page-break-inside: avoid; }
+    .filmstrip figure{ break-inside: avoid; }
+    .stage{ break-inside: avoid-page; }
+    h1, h2, h3{ break-after: avoid; }
+    .hero canvas{ display:none; }
+    .spine-fill{ transform: scaleY(1) !important; }
+    .stage .stage-marker{ background: var(--accent) !important; border-color: var(--accent) !important; box-shadow:none !important; }
+    .stage.fail .stage-marker{ background: var(--fail) !important; border-color: var(--fail) !important; }
+    .stage.ok .stage-marker{ background: var(--ok) !important; border-color: var(--ok) !important; }
+  }
 </style>
 
 <nav class="topnav"><a href="motivation.html">Reel-Learn</a><span>agents that learn by watching reels</span><a href="motivation.html" class="topnav-link">why this matters →</a></nav>
