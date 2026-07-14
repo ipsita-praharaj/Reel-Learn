@@ -10,6 +10,8 @@ Built on [H Company's](https://hcompany.ai) `hai-agents` platform
 (`h/web-surfer-flash`/`pro` baselines, `h/desktop` environments, custom
 Agents and Skills).
 
+**Presentable material:** [live pitch site](https://ipsita-praharaj.github.io/Reel-Learn/) (motivation + the Audacity case study) · [PDF](pdf/reel-learn.pdf)
+
 ## The core finding
 
 A baseline agent given a tutorial-derived plan got anchored on one instructed
